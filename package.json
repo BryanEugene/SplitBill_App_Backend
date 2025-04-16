@@ -1,0 +1,48 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/BryanEugene/SplitBill_App_Backend#readme",
+  "bugs": {
+    "url": "https://github.com/BryanEugene/SplitBill_App_Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BryanEugene/SplitBill_App_Backend.git"
+  },
+  "license": "ISC",
+  "author": "Bryan Eugene",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon",
+    "build": "tsc",
+    "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.41.0",
+    "express": "^4.21.2",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.28",
+    "@types/pg": "^8.11.4",
+    "drizzle-kit": "^0.20.14",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  }
+}
