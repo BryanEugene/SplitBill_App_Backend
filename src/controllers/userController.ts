@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { db } from '../db';
-import { users, NewUser } from '../db/schema';
+import { db } from '../db/index.js';
+import { users, NewUser } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 
 // Get all users

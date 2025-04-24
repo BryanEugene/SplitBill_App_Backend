@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
 import 'dotenv/config';
-import router from './router';
+import router from './router.js';
 
 const app = express();
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { db } from '../db';
-import { bills, billItems, billParticipants, NewBill, NewBillItem, NewBillParticipant } from '../db/schema';
+import { db } from '../db/index.js';
+import { bills, billItems, billParticipants, NewBill, NewBillItem, NewBillParticipant } from '../db/schema.js';
 import { eq, sql, count } from 'drizzle-orm';
 
 // Types to match the React context
@@ -41,7 +41,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       })
       .from(bills)
       .leftJoin(billParticipants, eq(bills.id, billParticipants.billId))
-      .groupBy(bills.id);
+      .groupBy(bills.id).$dynamic();
     
     // Apply category filter if provided
     if (category && category !== 'all') {
