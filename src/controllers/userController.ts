@@ -20,6 +20,34 @@ export const getUsers = async (_req: Request, res: Response) => {
   }
 };
 
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+    
+    // Check if user exists
+    const user = await db.select().from(users).where(eq(users.email, email));
+    
+    if (user.length === 0) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    
+    // Check password (in a real app, this should be hashed)
+    if (user[0].password !== password) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    
+    return res.status(200).json(user[0]);
+  } catch (error) {
+    console.error('Error logging in:', error);
+    return res.status(500).json({ message: 'Error logging in' });
+  }
+}
+
 // Get user by email
 export const getUserByEmail = async (req: Request, res: Response) => {
   try {

@@ -1,18 +1,31 @@
 import express from 'express';
 import * as UserController from './controllers/userController.js';
 import * as BillController from './controllers/billController.js';
+import * as FriendController from './controllers/friendController.js';
+import * as AnalyticsController from './controllers/analyticsController.js';
+import * as ReceiptController from './controllers/receiptController.js';
+import multer from 'multer';
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const router = express.Router();
 
+// Test endpoint
 router.get('/test', (req, res) => {
     res.send([
         "test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9", "test10",
     ]);
-    })
-
-// const response =  await fetch('localhost:8080/test')
-// String apiURL = 'http://10.0.2.2:8080/test'
-// console.log(await response.json())
+});
 
 // User routes
 router.get('/users', async (req, res, next) => {
@@ -23,6 +36,7 @@ router.get('/users', async (req, res, next) => {
     next(error);
   }
 });
+
 router.get('/users/:email', async (req, res, next) => {
   try {
     await UserController.getUserByEmail(req, res);
@@ -30,6 +44,7 @@ router.get('/users/:email', async (req, res, next) => {
     next(error);
   }
 });
+
 router.post('/users', async (req, res, next) => {
   try {
     await UserController.createUser(req, res);
@@ -38,14 +53,32 @@ router.post('/users', async (req, res, next) => {
   }
 });
 
+// Authentication routes
+router.post('/login', async (req, res, next) => {
+  try {
+    await UserController.login(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Bill routes
-router.get('/transactions', async (req, res, next) => {
+router.get('/bills', async (req, res, next) => {
   try {
     await BillController.getTransactions(req, res);
   } catch (error) {
     next(error);
   }
 });
+
+router.get('/bills/:id', async (req, res, next) => {
+  try {
+    await BillController.getBillDetails(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/bills', async (req, res, next) => {
   try {
     await BillController.saveBill(req, res);
@@ -53,6 +86,15 @@ router.post('/bills', async (req, res, next) => {
     next(error);
   }
 });
+
+router.post('/bills/:billId/payment', async (req, res, next) => {
+  try {
+    await BillController.updatePaymentStatus(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/bills/:billId/items', async (req, res, next) => {
   try {
     await BillController.saveBillItems(req, res);
@@ -60,9 +102,54 @@ router.post('/bills/:billId/items', async (req, res, next) => {
     next(error);
   }
 });
+
 router.post('/bills/:billId/participants', async (req, res, next) => {
   try {
     await BillController.saveBillParticipants(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Transaction endpoints (legacy routes)
+router.get('/transactions', async (req, res, next) => {
+  try {
+    await BillController.getTransactions(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Friend routes
+router.get('/friends', async (req, res, next) => {
+  try {
+    await FriendController.getFriends(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/friends', async (req, res, next) => {
+  try {
+    await FriendController.addFriend(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Analytics routes
+router.get('/analytics', async (req, res, next) => {
+  try {
+    await AnalyticsController.getAnalytics(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Receipt processing route
+router.post('/receipts/scan', upload.single('receipt'), async (req, res, next) => {
+  try {
+    await ReceiptController.processReceipt(req, res);
   } catch (error) {
     next(error);
   }

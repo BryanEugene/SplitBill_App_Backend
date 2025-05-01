@@ -52,14 +52,14 @@ export const billParticipants = pgTable('bill_participants', {
 });
 
 // Transaction History Table 
-// export const transactions = pgTable('transactions', {
-//   id: serial('id').primaryKey(),
-//   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-//   billId: integer('bill_id').references(() => bills.id, { onDelete: 'cascade' }).notNull(),
-//   amount: real('amount').notNull(),
-//   date: text('date').notNull(),
-//   createdAt: timestamp('created_at').defaultNow(),
-// });
+export const transactions = pgTable('transactions', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  billId: integer('bill_id').references(() => bills.id, { onDelete: 'cascade' }).notNull(),
+  amount: real('amount').notNull(),
+  date: text('date').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
 // Types for the models
 export type User = typeof users.$inferSelect
@@ -77,5 +77,5 @@ export type NewBillItem = typeof billItems.$inferInsert
 export type BillParticipant = typeof billParticipants.$inferSelect
 export type NewBillParticipant = typeof billParticipants.$inferInsert
 
-// export type Transaction = typeof transactions.$inferSelect
-// export type NewTransaction = typeof transactions.$inferInsert
+export type Transaction = typeof transactions.$inferSelect
+export type NewTransaction = typeof transactions.$inferInsert
