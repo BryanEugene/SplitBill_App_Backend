@@ -4,6 +4,8 @@ import * as BillController from './controllers/billController.js';
 import * as FriendController from './controllers/friendController.js';
 import * as AnalyticsController from './controllers/analyticsController.js';
 import * as ReceiptController from './controllers/receiptController.js';
+import * as PaymentMethodController from './controllers/paymentMethodController.js';
+import * as FcmTokenController from './controllers/fcmTokenController.js';
 import multer from 'multer';
 
 // Set up multer for file uploads
@@ -150,6 +152,72 @@ router.get('/analytics', async (req, res, next) => {
 router.post('/receipts/scan', upload.single('receipt'), async (req, res, next) => {
   try {
     await ReceiptController.processReceipt(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Payment Method routes
+router.get('/paymentMethods', async (req, res, next) => {
+  try {
+    await PaymentMethodController.getPaymentMethods(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/paymentMethods/:id', async (req, res, next) => {
+  try {
+    await PaymentMethodController.getPaymentMethodById(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/paymentMethods', async (req, res, next) => {
+  try {
+    await PaymentMethodController.createPaymentMethod(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/paymentMethods/:id', async (req, res, next) => {
+  try {
+    await PaymentMethodController.updatePaymentMethod(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/paymentMethods/:id', async (req, res, next) => {
+  try {
+    await PaymentMethodController.deletePaymentMethod(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// FCM Token routes
+router.get('/fcmTokens', async (req, res, next) => {
+  try {
+    await FcmTokenController.getUserFcmTokens(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/fcmTokens', async (req, res, next) => {
+  try {
+    await FcmTokenController.registerFcmToken(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/fcmTokens', async (req, res, next) => {
+  try {
+    await FcmTokenController.deleteFcmToken(req, res);
   } catch (error) {
     next(error);
   }

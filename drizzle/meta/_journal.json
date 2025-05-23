@@ -8,6 +8,13 @@
       "when": 1745466746184,
       "tag": "0000_chilly_charles_xavier",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1747206876718,
+      "tag": "0001_last_genesis",
+      "breakpoints": true
     }
   ]
 }

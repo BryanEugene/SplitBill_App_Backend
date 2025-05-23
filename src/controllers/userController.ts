@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../db/index.js';
-import { users, NewUser } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { users, NewUser, fcmTokens, NewFcmToken } from '../db/schema.js';
+import { eq, and } from 'drizzle-orm';
 
 // Get all users
 export const getUsers = async (_req: Request, res: Response) => {
@@ -22,7 +22,7 @@ export const getUsers = async (_req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, fcmToken, deviceId, platform } = req.body;
     
     // Validate required fields
     if (!email || !password) {
@@ -39,6 +39,38 @@ export const login = async (req: Request, res: Response) => {
     // Check password (in a real app, this should be hashed)
     if (user[0].password !== password) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    
+    // Handle FCM token if provided
+    if (fcmToken) {
+      const userId = user[0].id;
+      
+      // Check if token already exists for this device
+      const existingToken = deviceId 
+        ? await db.select().from(fcmTokens).where(
+            and(
+              eq(fcmTokens.userId, userId),
+              eq(fcmTokens.deviceId, deviceId)
+            )
+          )
+        : [];
+      
+      if (existingToken.length > 0) {
+        // Update existing token
+        await db.update(fcmTokens)
+          .set({ token: fcmToken, platform })
+          .where(eq(fcmTokens.id, existingToken[0].id));
+      } else {
+        // Create new token entry
+        const newToken: NewFcmToken = {
+          userId,
+          token: fcmToken,
+          deviceId,
+          platform
+        };
+        
+        await db.insert(fcmTokens).values(newToken);
+      }
     }
     
     return res.status(200).json(user[0]);

@@ -21,6 +21,24 @@ export const friends = pgTable('friends', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Payment Methods table
+export const paymentMethods = pgTable('payment_methods', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  methodName: text('method_name').notNull(), // e.g. "Bank BCA", "GoPay", "OVO"
+  accountNumber: text('account_number').notNull(),
+});
+
+// Firebase Cloud Messaging Tokens table
+export const fcmTokens = pgTable('fcm_tokens', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  token: text('token').notNull(),
+  deviceId: text('device_id'),
+  platform: text('platform'), // e.g. 'android', 'ios', 'web'
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
 // Bills table
 export const bills = pgTable('bills', {
   id: serial('id').primaryKey(),
@@ -67,6 +85,12 @@ export type NewUser = typeof users.$inferInsert
 
 export type Friend = typeof friends.$inferSelect
 export type NewFriend = typeof friends.$inferInsert
+
+export type PaymentMethod = typeof paymentMethods.$inferSelect
+export type NewPaymentMethod = typeof paymentMethods.$inferInsert
+
+export type FcmToken = typeof fcmTokens.$inferSelect
+export type NewFcmToken = typeof fcmTokens.$inferInsert
 
 export type Bill = typeof bills.$inferSelect
 export type NewBill = typeof bills.$inferInsert
