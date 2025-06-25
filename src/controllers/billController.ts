@@ -28,7 +28,7 @@ interface BillData {
 // Get transactions/bills with optional category filter
 export const getTransactions = async (req: Request, res: Response) => {
   try {
-    const { category } = req.query;
+    const { category, userId } = req.query;
     
     let query = db
       .select({
@@ -41,6 +41,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       })
       .from(bills)
       .leftJoin(billParticipants, eq(bills.id, billParticipants.billId))
+      .where(eq(bills.userId, Number(userId)))
       .groupBy(bills.id).$dynamic();
     
     // Apply category filter if provided

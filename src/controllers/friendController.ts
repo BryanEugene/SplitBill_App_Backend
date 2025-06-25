@@ -33,10 +33,14 @@ export const addFriend = async (req: Request, res: Response) => {
   try {
     const { userId, name, email, phoneNumber } = req.body;
     
+    console.log('Request body:', req.body);
+
     // Validate required fields
-    if (!userId || !name) {
+    if (userId === undefined || !name) {
       return res.status(400).json({ message: 'User ID and friend name are required' });
     }
+
+    console.log('Adding friend:', { userId, name, email, phoneNumber });
     
     const newFriend: NewFriend = {
       userId,
@@ -58,3 +62,14 @@ export const addFriend = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Error adding friend' });
   }
 };
+
+export const deleteFriend = async (req: Request, res: Response) => {
+    try{
+      const { friendId } = req.params;
+      await db.delete(friends).where(eq(friends.id, Number(friendId)));
+      return res.status(200).json({ message: 'Friend deleted successfully' });      
+    }catch(error) {
+      console.log('Error deleting friend:', error);
+      return res.status(500).json({ message: 'Error deleting friend' });
+    }
+  }

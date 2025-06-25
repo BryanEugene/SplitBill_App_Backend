@@ -55,6 +55,22 @@ router.post('/users', async (req, res, next) => {
   }
 });
 
+router.post('/users/:id', async (req, res, next) => {
+  try {
+    await UserController.updateUser(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/users/:id', async (req, res, next) => {
+  try {
+    await UserController.deleteUser(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Authentication routes
 router.post('/login', async (req, res, next) => {
   try {
@@ -134,6 +150,14 @@ router.get('/friends', async (req, res, next) => {
 router.post('/friends', async (req, res, next) => {
   try {
     await FriendController.addFriend(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/friends/:friendId', async (req, res, next) => {
+  try {
+    await FriendController.deleteFriend(req, res);
   } catch (error) {
     next(error);
   }
